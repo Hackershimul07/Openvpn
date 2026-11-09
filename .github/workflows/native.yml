@@ -6,6 +6,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: sudo apt-get install -y ninja-build
-      - run: ./build_native.sh
+      - run: bash build_native.sh
       - uses: actions/upload-artifact@v4
         with: { name: jniLibs, path: app/src/main/jniLibs }
