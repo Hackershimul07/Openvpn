@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 project(ovpnbridge CXX C)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(TP ${CMAKE_CURRENT_SOURCE_DIR}/third_party)
 set(O3 ${TP}/openvpn3)
 
@@ -14,8 +15,8 @@ add_subdirectory(${TP}/lz4/build/cmake lz4 EXCLUDE_FROM_ALL)
 
 add_library(ovpnbridge SHARED native-lib.cpp ${O3}/client/ovpncli.cpp)
 target_include_directories(ovpnbridge PRIVATE ${O3} ${O3}/client ${TP}/asio/asio/include
-    ${TP}/mbedtls/include ${TP}/lz4/lib)
+    ${TP}/mbedtls/include ${TP}/lz4/lib ${TP}/fmt/include)
 target_compile_definitions(ovpnbridge PRIVATE
     USE_ASIO ASIO_STANDALONE ASIO_NO_DEPRECATED ASIO_HAS_STD_ARRAY ASIO_HAS_STD_CHRONO
-    OPENVPN_PLATFORM_ANDROID USE_MBEDTLS HAVE_LZ4)
+    FMT_HEADER_ONLY USE_MBEDTLS HAVE_LZ4)
 target_link_libraries(ovpnbridge mbedtls mbedx509 mbedcrypto lz4_static log)
