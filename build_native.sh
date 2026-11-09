@@ -8,6 +8,7 @@ CPP=app/src/main/cpp; TP=$CPP/third_party; mkdir -p $TP
 [ -d $TP/openvpn3 ] || git clone --depth 1 https://github.com/OpenVPN/openvpn3 $TP/openvpn3
 [ -d $TP/asio ]     || git clone --depth 1 https://github.com/chriskohlhoff/asio $TP/asio
 [ -d $TP/lz4 ]      || git clone --depth 1 --branch v1.9.4 https://github.com/lz4/lz4 $TP/lz4
+[ -d $TP/fmt ]      || git clone --depth 1 --branch 10.2.1 https://github.com/fmtlib/fmt $TP/fmt
 [ -d $TP/mbedtls ]  || git clone --depth 1 --branch v3.6.0 --recurse-submodules --shallow-submodules https://github.com/Mbed-TLS/mbedtls $TP/mbedtls
 for ABI in arm64-v8a armeabi-v7a; do
   B=build/$ABI; rm -rf $B
