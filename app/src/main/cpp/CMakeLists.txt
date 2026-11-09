@@ -14,6 +14,12 @@ add_subdirectory(${TP}/mbedtls mbedtls EXCLUDE_FROM_ALL)
 add_subdirectory(${TP}/lz4/build/cmake lz4 EXCLUDE_FROM_ALL)
 
 add_library(ovpnbridge SHARED native-lib.cpp ${O3}/client/ovpncli.cpp)
+# extra openvpn3 translation units needed at link time (DataChannelEpoch etc.)
+foreach(f openvpn/crypto/data_epoch.cpp)
+  if(EXISTS ${O3}/${f})
+    target_sources(ovpnbridge PRIVATE ${O3}/${f})
+  endif()
+endforeach()
 target_include_directories(ovpnbridge PRIVATE ${O3} ${O3}/client ${TP}/asio/asio/include
     ${TP}/mbedtls/include ${TP}/lz4/lib ${TP}/fmt/include)
 target_compile_definitions(ovpnbridge PRIVATE
