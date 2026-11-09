@@ -24,7 +24,11 @@ public:
     bool tun_builder_add_address(const std::string& a, int p, const std::string&, bool, bool) override { tun << "A " << a << " " << p << "\n"; return true; }
     bool tun_builder_reroute_gw(bool v4, bool v6, unsigned int) override { if (v4) tun << "R 0.0.0.0 0\n"; if (v6) tun << "R :: 0\n"; return true; }
     bool tun_builder_add_route(const std::string& a, int p, int, bool) override { tun << "R " << a << " " << p << "\n"; return true; }
-    bool tun_builder_add_dns_server(const std::string& a, bool) override { tun << "D " << a << "\n"; return true; }
+    bool tun_builder_add_dns_server(const std::string& a, bool) { tun << "D " << a << "\n"; return true; }   // older cores
+    bool tun_builder_set_dns_options(const DnsOptions& dns) override {                                        // newer cores
+        for (const auto& kv : dns.servers) for (const auto& a : kv.second.addresses) tun << "D " << a.address << "\n";
+        return true;
+    }
     bool tun_builder_set_mtu(int m) override { tun << "M " << m << "\n"; return true; }
     bool tun_builder_set_session_name(const std::string&) override { return true; }
     int tun_builder_establish() override {
@@ -44,6 +48,7 @@ public:
         env.e->CallVoidMethod(g_svc, env.e->GetMethodID(c, "onNativeEvent", "(Ljava/lang/String;Ljava/lang/String;)V"),
             env.e->NewStringUTF(ev.name.c_str()), env.e->NewStringUTF(ev.info.c_str()));
     }
+    void acc_event(const ClientAPI::AppCustomControlMessageEvent&) override {}
     void log(const ClientAPI::LogInfo& l) override { __android_log_print(ANDROID_LOG_INFO, "ovpn3", "%s", l.text.c_str()); }
     void external_pki_cert_request(ClientAPI::ExternalPKICertRequest& r) override { r.error = true; }
     void external_pki_sign_request(ClientAPI::ExternalPKISignRequest& r) override { r.error = true; }
